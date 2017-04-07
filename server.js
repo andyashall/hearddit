@@ -35,13 +35,7 @@ app.post('/webhook', (req, res) => {
 
   // Actions
 
-  let act = "sayFeedback"
-
-  if (!req.body.result.contexts) {
-    act = "sayName"
-  }
-
-  if (act === "sayName") {
+  if (action === "sayName") {
     let name = params.name
       let resData = {
         speech: "Hi " + name + ", what would you like to say?",
@@ -55,7 +49,7 @@ app.post('/webhook', (req, res) => {
     return 
   }
 
-  if (act === "sayFeedback") {
+  if (action === "sayFeedback") {
     let feedback = params.feedback,
         contexts = req.body.result.contexts,
         name =  contexts.find((d) => {
