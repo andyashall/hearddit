@@ -100,7 +100,7 @@ app.post('/webhook', (req, res) => {
       return     
     }
   }
-}
+})
 
 app.listen(port, '0.0.0.0', (err) => {
   if (err) {
