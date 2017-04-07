@@ -35,8 +35,13 @@ app.post('/webhook', (req, res) => {
 
   // Actions
 
-// Login
-  if (action === "sayName") {
+  let act = "sayFeedback"
+
+  if (!req.body.result.contexts) {
+    act = "sayName"
+  }
+
+  if (act === "sayName") {
     let name = params.name
       let resData = {
         speech: "Hi " + name + ", what would you like to say?",
@@ -50,7 +55,7 @@ app.post('/webhook', (req, res) => {
     return 
   }
 
-  if (action === "sayFeedback") {
+  if (act === "sayFeedback") {
     let feedback = params.feedback,
         contexts = req.body.result.contexts,
         name =  contexts.find((d) => {
@@ -68,56 +73,6 @@ app.post('/webhook', (req, res) => {
     return 
   }
 
-// Open specified meeting
-  if (action === "openMeeting") {
-    let contexts = req.body.result.contexts
-    let n = params.meetingNumber
-    let uid =  contexts.find((d) => {
-        return d.name == "userid"
-      }).parameters.userId
-    if (uid !== null) {
-      getMeetingId(uid, n, (data, err) => {
-        if (data == "error") {
-          let resData = {
-            speech: "Error creating meeting",
-            displayText: "Error creating meeting",
-            data: {},
-            contextOut: [],
-            source: "",
-            followupEvent: {}
-          }
-          res.send(resData);
-          return         
-        } else {
-        let mid = data[0]._id
-        let mt = data[0].title
-        console.log(data)
-        var tasks = [];    
-        let resData = {
-          speech: "Meeting opened: " + mt,
-          displayText: "Meeting opened: " + mt,
-          data: {},
-          contextOut: [{name:"meetingId", lifespan:120, parameters: {meetingId: mid}}],
-          source: "",
-          followupEvent: {}
-        }
-        res.send(resData)
-        return
-      }
-      })
-    } else {
-      let resData = {
-        speech: "Please login to see your meeting",
-        displayText: "Please login to see your meeting",
-        data: {},
-        contextOut: [],
-        source: "",
-        followupEvent: {}
-      }
-      res.send(resData)
-      return     
-    }
-  }
 })
 
 app.listen(port, '0.0.0.0', (err) => {
