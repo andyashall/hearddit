@@ -56,14 +56,39 @@ app.post('/webhook', (req, res) => {
         return d.name == "name"
       }).parameters.name
       console.log(name + " " + feedback)
-      let resData = {
-        speech: "Thanks for you feedback!",
-        displayText: "Thanks for you feedback!",
-        data: {},
-        source: "",
-        followupEvent: {}
-      }
-    res.send(resData)
+      MongoClient.connect(url)
+      .then((db,err) => {
+        assert.equal(null,err)
+        let Feedback = db.collection('feedback')
+        Feedback.insert({
+          name: name,
+          feedback: feedback,
+          created: new Date(),
+          _id: randomID(20)
+        }, (err, result) => {
+          if (err) {
+          let resData = {
+            speech: "Error inserting feedback!",
+            displayText: "Error inserting feedback!",
+            data: {},
+            source: "",
+            followupEvent: {}
+          }
+          res.send(resData)
+          }
+          if (result) {
+          let resData = {
+            speech: "Thanks for you feedback!",
+            displayText: "Thanks for you feedback!",
+            data: {},
+            source: "",
+            followupEvent: {}
+          }
+          res.send(resData)
+          }
+        })
+      })
+
     return 
   }
 
