@@ -58,10 +58,9 @@ app.post('/webhook', (req, res) => {
       }).parameters.name
       console.log(name + " " + feedback)
       let resData = {
-        speech: "Hi " + name + ", what would you like to say?",
-        displayText: "Hi " + name + ", what would you like to say?",
+        speech: "Thanks for you feedback!",
+        displayText: "Thanks for you feedback!",
         data: {},
-        contextOut: [{name:"name", lifespan:120, parameters: {name: name}}],
         source: "",
         followupEvent: {}
       }
