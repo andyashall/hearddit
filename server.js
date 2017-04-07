@@ -39,8 +39,27 @@ app.post('/webhook', (req, res) => {
   if (action === "sayName") {
     let name = params.name
       let resData = {
-        speech: "Hi" + name + ", what would you like to say?",
-        displayText: "Hi" + name + ", what would you like to say?",
+        speech: "Hi " + name + ", what would you like to say?",
+        displayText: "Hi " + name + ", what would you like to say?",
+        data: {},
+        contextOut: [{name:"name", lifespan:120, parameters: {name: name}}],
+        source: "",
+        followupEvent: {}
+      }
+    res.send(resData)
+    return 
+  }
+
+  if (action === "sayFeedback") {
+    let feedback = params.feedback,
+        contexts = req.body.result.contexts,
+        name =  contexts.find((d) => {
+        return d.name == "name"
+      }).parameters.name
+      console.log(name + " " + feedback)
+      let resData = {
+        speech: "Hi " + name + ", what would you like to say?",
+        displayText: "Hi " + name + ", what would you like to say?",
         data: {},
         contextOut: [{name:"name", lifespan:120, parameters: {name: name}}],
         source: "",
