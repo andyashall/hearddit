@@ -42,7 +42,7 @@ app.post('/webhook', (req, res) => {
         speech: "Hi " + name + ", what would you like to say?",
         displayText: "Hi " + name + ", what would you like to say?",
         data: {},
-        contextOut: [{name:"name", lifespan:120, parameters: {name: name}}, {name:"lastname", lifespan:120, parameters: {lastname: lastname}}],
+        contextOut: [{name:"name", lifespan:120, parameters: {name: name, lastname: lastname}}],
         source: "",
         followupEvent: {}
       }
@@ -57,7 +57,7 @@ app.post('/webhook', (req, res) => {
         return d.name == "name"
       }).parameters.name,
         lastname =  contexts.find((d) => {
-        return d.lastname == "lastname"
+        return d.name == "name"
       }).parameters.lastname
       console.log(name + " " + lastname + ": " + feedback)
       MongoClient.connect(url)
