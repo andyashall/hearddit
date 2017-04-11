@@ -82,8 +82,8 @@ app.post('/webhook', (req, res) => {
           }
           if (result) {
           let resData = {
-            speech: "Thanks for you feedback!",
-            displayText: "Thanks for you feedback!",
+            speech: "Thank you for your feedback!",
+            displayText: "Thank you for your feedback!",
             data: {},
             source: "",
             followupEvent: {}
