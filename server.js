@@ -63,7 +63,7 @@ app.post('/webhook', (req, res) => {
       MongoClient.connect(url)
       .then((db,err) => {
         assert.equal(null,err)
-        let Feedback = db.collection('feedback')
+        let Feedback = db.collection('holding')
         Feedback.insert({
           name: name + " " + lastname,
           feedback: feedback,
