@@ -65,7 +65,7 @@ app.post('/webhook', (req, res) => {
         assert.equal(null,err)
         let Feedback = db.collection('feedback')
         Feedback.insert({
-          name: name,
+          name: name + " " + lastname,
           feedback: feedback,
           created: new Date(),
           _id: randomID(20)
