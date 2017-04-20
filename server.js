@@ -11,6 +11,7 @@ const randomID = require('random-id')
 const MongoClient = require('mongodb').MongoClient
   , assert = require('assert')
 const bodyParser = require('body-parser')
+const axios = require('axios')
 
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
@@ -19,7 +20,7 @@ const url = process.env.MONGO_URL
 
 app.post('/webhook', (req, res) => {
 
-  if (!req.body.result.action) {
+  if (req.headers.pass !== "sFCu8YTZodeFylBqKari") {
     res.send("Not Authorized")
     return
   }
@@ -34,6 +35,15 @@ app.post('/webhook', (req, res) => {
   console.log("Params: " + params)
 
   // Actions
+
+  if (action === "input.welcome") {
+      let resData = {
+        speech: "",
+        displayText: ""
+      }
+    res.send(resData)
+    return 
+  }
 
   if (action === "sayName") {
     let name = params.name,
