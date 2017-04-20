@@ -22,6 +22,7 @@ app.post('/webhook', (req, res) => {
 
   if (req.headers.pass !== "sFCu8YTZodeFylBqKari") {
     res.send("Not Authorized")
+    console.log("Unautharized attempt")
     return
   }
 
@@ -38,8 +39,8 @@ app.post('/webhook', (req, res) => {
 
   if (action === "input.welcome") {
       let resData = {
-        speech: "",
-        displayText: ""
+        speech: "Hi",
+        displayText: "Hi"
       }
     res.send(resData)
     return 
