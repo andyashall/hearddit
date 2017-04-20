@@ -46,9 +46,8 @@ app.post('/webhook', (req, res) => {
     return 
   }
 
-  if (action === "sayName") {
-    let name = params.name,
-        lastname = params.lastname
+  if (action === "getHot") {
+    let subreddit = params.subreddit
       let resData = {
         speech: "Hi " + name + ", what would you like to say?",
         displayText: "Hi " + name + ", what would you like to say?",
