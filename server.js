@@ -52,7 +52,7 @@ app.post('/webhook', (req, res) => {
       axios.get("https://www.reddit.com/r/" + subreddit + ".json")
       .then((res) => {
         let posts = res.data.data.children
-        let lim = posts.length
+        let lim = 5
         let count = 0
         let titles = []
         Object.keys(posts).forEach((x) => {
