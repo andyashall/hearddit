@@ -49,12 +49,8 @@ app.post('/webhook', (req, res) => {
   if (action === "getHot") {
     let subreddit = params.subreddit
       let resData = {
-        speech: "Hi " + name + ", what would you like to say?",
-        displayText: "Hi " + name + ", what would you like to say?",
-        data: {},
-        contextOut: [{name:"name", lifespan:120, parameters: {name: name, lastname: lastname}}],
-        source: "",
-        followupEvent: {}
+        speech: "Hi " + subreddit + ", what would you like to say?",
+        displayText: "Hi " + subreddit + ", what would you like to say?"
       }
     res.send(resData)
     return 
