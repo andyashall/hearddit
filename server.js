@@ -48,12 +48,31 @@ app.post('/webhook', (req, res) => {
 
   if (action === "getHot") {
     let subreddit = params.subreddit
-      let resData = {
-        speech: "Hi " + subreddit + ", what would you like to say?",
-        displayText: "Hi " + subreddit + ", what would you like to say?"
-      }
-    res.send(resData)
-    return 
+
+      axios.get("https://www.reddit.com/r/" + subreddit + ".json")
+      .then((res) => {
+        let posts = res.data.data.children
+        let lim = posts.length
+        let count = 0
+        let titles = []
+        Object.keys(posts).forEach((x) => {
+          titles.push([parseInt(x) + 1]+": "+posts[x].data.title + ".\n")
+          count++
+          if (count == lim) {
+            let speech = titles.toString().replace(/,/g, "")
+            let resData = {
+              speech: speech,
+              displayText: speech
+            }
+            res.send(resData)
+            return
+          }
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+        res.send(err)
+      }) 
   }
 
   if (action === "sayFeedback") {
