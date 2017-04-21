@@ -68,14 +68,14 @@ app.post('/webhook', (req, res) => {
 
   if (action === "getNew") {
     let subreddit = params.subreddit
-    getPosts(subreddit, "New", (resData) => {
+    getPosts(subreddit, "New", 0, (resData) => {
       res.send(resData)
     })
   }
 
   if (action === "getTop") {
     let subreddit = params.subreddit
-    getPosts(subreddit, "Top", (resData) => {
+    getPosts(subreddit, "Top", 0, (resData) => {
       res.send(resData)
     })
   }
