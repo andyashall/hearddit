@@ -87,60 +87,16 @@ app.post('/webhook', (req, res) => {
 
   if (action === "getNew") {
     let subreddit = params.subreddit
-
-      axios.get("https://www.reddit.com/r/" + subreddit + "/new.json")
-      .then((resp) => {
-        let posts = resp.data.data.children
-        let lim = 5
-        let count = 0
-        let titles = []
-        Object.keys(posts).forEach((x) => {
-          titles.push([parseInt(x) + 1]+": "+posts[x].data.title + ".\n")
-          count++
-          if (count == lim) {
-            let speech = "Here are the new posts in " + subreddit + ".\n " + titles.toString().replace(/,/g, "")
-            let resData = {
-              speech: speech,
-              displayText: speech
-            }
-            res.send(resData)
-            return
-          }
-        })
-      })
-      .catch((err) => {
-        console.log(err)
-        res.send(err)
-      }) 
+    getPosts(subreddit, "New", (resData) => {
+      res.send(resData)
+    })
   }
 
   if (action === "getTop") {
     let subreddit = params.subreddit
-
-      axios.get("https://www.reddit.com/r/" + subreddit + "/top.json")
-      .then((resp) => {
-        let posts = resp.data.data.children
-        let lim = 5
-        let count = 0
-        let titles = []
-        Object.keys(posts).forEach((x) => {
-          titles.push([parseInt(x) + 1]+": "+posts[x].data.title + ".\n")
-          count++
-          if (count == lim) {
-            let speech = "Here are the top posts in " + subreddit + ".\n " + titles.toString().replace(/,/g, "")
-            let resData = {
-              speech: speech,
-              displayText: speech
-            }
-            res.send(resData)
-            return
-          }
-        })
-      })
-      .catch((err) => {
-        console.log(err)
-        res.send(err)
-      }) 
+    getPosts(subreddit, "Top", (resData) => {
+      res.send(resData)
+    })
   }
 
 })
