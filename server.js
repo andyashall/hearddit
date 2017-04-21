@@ -54,6 +54,7 @@ app.post('/webhook', (req, res) => {
   }
 
   if (action === "getHot.getHot-next") {
+    console.log(req.body.result.contexts)
     let contexts = req.body.result.contexts,
         subreddit =  contexts.find((d) => {
           return d.name == "subreddit"
