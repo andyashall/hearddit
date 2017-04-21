@@ -75,6 +75,37 @@ app.post('/webhook', (req, res) => {
       }) 
   }
 
+  if (action === "getHot.getHot-next") {
+    let contexts = req.body.result.contexts,
+        subreddit =  contexts.find((d) => {
+          return d.name == "subreddit"
+        }).parameters.subreddit
+      axios.get("https://www.reddit.com/r/" + subreddit + ".json")
+      .then((resp) => {
+        let posts = resp.data.data.children
+        let lim = 10
+        let count = 0
+        let titles = []
+        Object.keys(posts).forEach((x) => {
+          titles.push([parseInt(x) + 1]+": "+posts[x].data.title + ".\n")
+          count++
+          if (count == lim) {
+            let speech = "Here are the hot posts in " + subreddit + ".\n " + titles.toString().replace(/,/g, "")
+            let resData = {
+              speech: speech,
+              displayText: speech
+            }
+            res.send(resData)
+            return
+          }
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+        res.send(err)
+      }) 
+  }
+
   if (action === "getNew") {
     let subreddit = params.subreddit
 
