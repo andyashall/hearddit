@@ -39,8 +39,8 @@ app.post('/webhook', (req, res) => {
 
   if (action === "input.welcome") {
       let resData = {
-        speech: "Hi",
-        displayText: "Hi"
+        speech: "Hi!",
+        displayText: "Hi!"
       }
     res.send(resData)
     return 
@@ -83,14 +83,14 @@ app.post('/webhook', (req, res) => {
       axios.get("https://www.reddit.com/r/" + subreddit + ".json")
       .then((resp) => {
         let posts = resp.data.data.children
-        let lim = 10
+        let lim = 5
         let count = 0
         let titles = []
         Object.keys(posts).forEach((x) => {
-          titles.push([parseInt(x) + 1]+": "+posts[x].data.title + ".\n")
+          titles.push([parseInt(x) + 6]+": "+posts[x + 5].data.title + ".\n")
           count++
           if (count == lim) {
-            let speech = "Here are the hot posts in " + subreddit + ".\n " + titles.toString().replace(/,/g, "")
+            let speech = "Here are the next 5 hot posts in " + subreddit + ".\n " + titles.toString().replace(/,/g, "")
             let resData = {
               speech: speech,
               displayText: speech
