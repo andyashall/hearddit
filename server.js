@@ -73,11 +73,37 @@ app.post('/webhook', (req, res) => {
     })
   }
 
+  if (action === "getNew.getNew-next") {
+    let contexts = req.body.result.contexts,
+        subreddit =  contexts.find((d) => {
+          return d.name == "subreddit"
+        }).parameters.subreddit,
+        page = contexts.find((d) => {
+          return d.name == "page"
+        }).parameters.page
+    getPosts(subreddit, "New", page, (resData) => {
+      res.send(resData)
+    })     
+  }
+
   if (action === "getTop") {
     let subreddit = params.subreddit
     getPosts(subreddit, "Top", 0, (resData) => {
       res.send(resData)
     })
+  }
+
+  if (action === "getTop.getTop-next") {
+    let contexts = req.body.result.contexts,
+        subreddit =  contexts.find((d) => {
+          return d.name == "subreddit"
+        }).parameters.subreddit,
+        page = contexts.find((d) => {
+          return d.name == "page"
+        }).parameters.page
+    getPosts(subreddit, "Top", page, (resData) => {
+      res.send(resData)
+    })     
   }
 
 })
