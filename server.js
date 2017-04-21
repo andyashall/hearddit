@@ -48,7 +48,7 @@ app.post('/webhook', (req, res) => {
 
   if (action === "getHot") {
     let subreddit = params.subreddit
-    getPosts(subreddit, "Hot", (resData) => {
+    getPosts(subreddit, "Hot", 0, (resData) => {
       res.send(resData)
     })
   }
@@ -58,31 +58,12 @@ app.post('/webhook', (req, res) => {
         subreddit =  contexts.find((d) => {
           return d.name == "subreddit"
         }).parameters.subreddit
-      axios.get("https://www.reddit.com/r/" + subreddit + ".json")
-      .then((resp) => {
-        let posts = resp.data.data.children
-        let lim = 5
-        let count = 0
-        let titles = []
-        Object.keys(posts).forEach((x) => {
-          let n = parseInt(x) + 5
-          titles.push([parseInt(x) + 6]+": "+posts[n].data.title + ".\n")
-          count++
-          if (count == lim) {
-            let speech = "Here are the next 5 hot posts in " + subreddit + ".\n " + titles.toString().replace(/,/g, "")
-            let resData = {
-              speech: speech,
-              displayText: speech
-            }
-            res.send(resData)
-            return
-          }
-        })
-      })
-      .catch((err) => {
-        console.log(err)
-        res.send(err)
-      }) 
+        page = contexts.find((d) => {
+          return d.name == "page"
+        }).parameters.page
+    getPosts(subreddit, "Hot", page, (resData) => {
+      res.send(resData)
+    })     
   }
 
   if (action === "getNew") {
@@ -101,7 +82,17 @@ app.post('/webhook', (req, res) => {
 
 })
 
-const getPosts = (subreddit, sort, callback) => {
+const getPosts = (subreddit, sort, page, callback) => {
+  let skip = 0
+  if (page === 1) {
+    skip = 5
+  }
+  if (page === 2) {
+    skip = 10
+  }
+  if (page === 3) {
+    skip = 15
+  }
   axios.get("https://www.reddit.com/r/" + subreddit + ".json")
   .then((resp) => {
     let posts = resp.data.data.children
@@ -109,13 +100,15 @@ const getPosts = (subreddit, sort, callback) => {
     let count = 0
     let titles = []
     Object.keys(posts).forEach((x) => {
-      titles.push([parseInt(x) + 1]+": "+posts[x].data.title + ".\n")
+      let n = parseInt(x) + skip
+      titles.push([parseInt(n) + 1]+": "+posts[n].data.title + ".\n")
       count++
       if (count == lim) {
         let speech = "Here are the " + sort + " posts in " + subreddit + ".\n " + titles.toString().replace(/,/g, "")
         let resData = {
           speech: speech,
-          displayText: speech
+          displayText: speech,
+          contextOut: [{name:"page", lifespan:5, parameters: {page: page + 1}}],
         }
         callback(resData)
         return
