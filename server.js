@@ -48,31 +48,9 @@ app.post('/webhook', (req, res) => {
 
   if (action === "getHot") {
     let subreddit = params.subreddit
-
-      axios.get("https://www.reddit.com/r/" + subreddit + ".json")
-      .then((resp) => {
-        let posts = resp.data.data.children
-        let lim = 5
-        let count = 0
-        let titles = []
-        Object.keys(posts).forEach((x) => {
-          titles.push([parseInt(x) + 1]+": "+posts[x].data.title + ".\n")
-          count++
-          if (count == lim) {
-            let speech = "Here are the hot posts in " + subreddit + ".\n " + titles.toString().replace(/,/g, "")
-            let resData = {
-              speech: speech,
-              displayText: speech
-            }
-            res.send(resData)
-            return
-          }
-        })
-      })
-      .catch((err) => {
-        console.log(err)
-        res.send(err)
-      }) 
+    getPosts(subreddit, "Hot", (resData) => {
+      res.send(resData)
+    })
   }
 
   if (action === "getHot.getHot-next") {
@@ -166,6 +144,33 @@ app.post('/webhook', (req, res) => {
   }
 
 })
+
+const getPosts = (subreddit, sort, callback) => {
+  axios.get("https://www.reddit.com/r/" + subreddit + ".json")
+  .then((resp) => {
+    let posts = resp.data.data.children
+    let lim = 5
+    let count = 0
+    let titles = []
+    Object.keys(posts).forEach((x) => {
+      titles.push([parseInt(x) + 1]+": "+posts[x].data.title + ".\n")
+      count++
+      if (count == lim) {
+        let speech = "Here are the " + sort + " posts in " + subreddit + ".\n " + titles.toString().replace(/,/g, "")
+        let resData = {
+          speech: speech,
+          displayText: speech
+        }
+        callback(resData)
+        return
+      }
+    })
+  })
+  .catch((err) => {
+    console.log(err)
+    res.send(err)
+  })
+}
 
 app.listen(port, '0.0.0.0', (err) => {
   if (err) {
