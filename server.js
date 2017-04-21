@@ -87,7 +87,8 @@ app.post('/webhook', (req, res) => {
         let count = 0
         let titles = []
         Object.keys(posts).forEach((x) => {
-          titles.push([parseInt(x) + 6]+": "+posts[x + 5].data.title + ".\n")
+          let n = parseInt(x) + 5
+          titles.push([parseInt(x) + 6]+": "+posts[n].data.title + ".\n")
           count++
           if (count == lim) {
             let speech = "Here are the next 5 hot posts in " + subreddit + ".\n " + titles.toString().replace(/,/g, "")
