@@ -116,7 +116,6 @@ const getPosts = (subreddit, sort, page, callback) => {
   if (page === 3) {
     skip = 15
   }
-  if (sort === "hot") {}
   axios.get("https://www.reddit.com/r/" + subreddit + "/" + sort + ".json")
   .then((resp) => {
     let posts = resp.data.data.children
