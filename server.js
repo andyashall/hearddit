@@ -7,9 +7,6 @@ const isDeveloping = process.env.NODE_ENV !== 'production'
 const port = isDeveloping ? 3000 : process.env.PORT
 const app = express()
 
-const randomID = require('random-id')
-const MongoClient = require('mongodb').MongoClient
-  , assert = require('assert')
 const bodyParser = require('body-parser')
 const axios = require('axios')
 
@@ -48,7 +45,7 @@ app.post('/webhook', (req, res) => {
 
   if (action === "getHot") {
     let subreddit = params.subreddit
-    getPosts(subreddit, "Hot", 0, (resData) => {
+    getPosts(subreddit, "hot", 0, (resData) => {
       res.send(resData)
     })
   }
@@ -61,14 +58,14 @@ app.post('/webhook', (req, res) => {
         page = contexts.find((d) => {
           return d.name == "page"
         }).parameters.page
-    getPosts(subreddit, "Hot", page, (resData) => {
+    getPosts(subreddit, "hot", page, (resData) => {
       res.send(resData)
     })     
   }
 
   if (action === "getNew") {
     let subreddit = params.subreddit
-    getPosts(subreddit, "New", 0, (resData) => {
+    getPosts(subreddit, "new", 0, (resData) => {
       res.send(resData)
     })
   }
@@ -81,14 +78,14 @@ app.post('/webhook', (req, res) => {
         page = contexts.find((d) => {
           return d.name == "page"
         }).parameters.page
-    getPosts(subreddit, "New", page, (resData) => {
+    getPosts(subreddit, "new", page, (resData) => {
       res.send(resData)
     })     
   }
 
   if (action === "getTop") {
     let subreddit = params.subreddit
-    getPosts(subreddit, "Top", 0, (resData) => {
+    getPosts(subreddit, "top", 0, (resData) => {
       res.send(resData)
     })
   }
@@ -101,7 +98,7 @@ app.post('/webhook', (req, res) => {
         page = contexts.find((d) => {
           return d.name == "page"
         }).parameters.page
-    getPosts(subreddit, "Top", page, (resData) => {
+    getPosts(subreddit, "top", page, (resData) => {
       res.send(resData)
     })     
   }
@@ -119,7 +116,8 @@ const getPosts = (subreddit, sort, page, callback) => {
   if (page === 3) {
     skip = 15
   }
-  axios.get("https://www.reddit.com/r/" + subreddit + ".json")
+  if (sort === "hot") {}
+  axios.get("https://www.reddit.com/r/" + subreddit + "/" + sort + ".json")
   .then((resp) => {
     let posts = resp.data.data.children
     let lim = 5
