@@ -17,9 +17,9 @@ const url = process.env.MONGO_URL
 
 app.post('/webhook', (req, res) => {
 
-  if (req.headers.pass !== "sFCu8YTZodeFylBqKari") {
-    res.send("Not Authorized")
-    console.log("Unautharized attempt")
+  if (req.headers.pass !== 'sFCu8YTZodeFylBqKari') {
+    res.send('Not Authorized')
+    console.log('Unautharized attempt')
     return
   }
 
@@ -27,78 +27,78 @@ app.post('/webhook', (req, res) => {
       sid = req.body.sessionId,
       params = req.body.result.parameters
 
-  console.log("Request Time: " + req.body.timestamp)
-  console.log("Session ID: " + sid)
-  console.log("Request Type: " + action)
-  console.log("Params: " + params)
+  console.log('Request Time: ' + req.body.timestamp)
+  console.log('Session ID: ' + sid)
+  console.log('Request Type: ' + action)
+  console.log('Params: ' + params)
 
   // Actions
 
-  if (action === "input.welcome") {
+  if (action === 'input.welcome') {
       let resData = {
-        speech: "Hi!",
-        displayText: "Hi!"
+        speech: 'Hi!',
+        displayText: 'Hi!'
       }
     res.send(resData)
     return 
   }
 
-  if (action === "getHot") {
+  if (action === 'getHot') {
     let subreddit = params.subreddit
-    getPosts(subreddit, "hot", 0, (resData) => {
+    getPosts(subreddit, 'hot', 0, (resData) => {
       res.send(resData)
     })
   }
 
-  if (action === "getHot.getHot-next") {
+  if (action === 'getHot.getHot-next') {
     let contexts = req.body.result.contexts,
         subreddit =  contexts.find((d) => {
-          return d.name == "subreddit"
+          return d.name == 'subreddit'
         }).parameters.subreddit,
         page = contexts.find((d) => {
-          return d.name == "page"
+          return d.name == 'page'
         }).parameters.page
-    getPosts(subreddit, "hot", page, (resData) => {
+    getPosts(subreddit, 'hot', page, (resData) => {
       res.send(resData)
     })     
   }
 
-  if (action === "getNew") {
+  if (action === 'getNew') {
     let subreddit = params.subreddit
-    getPosts(subreddit, "new", 0, (resData) => {
+    getPosts(subreddit, 'new', 0, (resData) => {
       res.send(resData)
     })
   }
 
-  if (action === "getNew.getNew-next") {
+  if (action === 'getNew.getNew-next') {
     let contexts = req.body.result.contexts,
         subreddit =  contexts.find((d) => {
-          return d.name == "subreddit"
+          return d.name == 'subreddit'
         }).parameters.subreddit,
         page = contexts.find((d) => {
-          return d.name == "page"
+          return d.name == 'page'
         }).parameters.page
-    getPosts(subreddit, "new", page, (resData) => {
+    getPosts(subreddit, 'new', page, (resData) => {
       res.send(resData)
     })     
   }
 
-  if (action === "getTop") {
+  if (action === 'getTop') {
     let subreddit = params.subreddit
-    getPosts(subreddit, "top", 0, (resData) => {
+    getPosts(subreddit, 'top', 0, (resData) => {
       res.send(resData)
     })
   }
 
-  if (action === "getTop.getTop-next") {
+  if (action === 'getTop.getTop-next') {
     let contexts = req.body.result.contexts,
         subreddit =  contexts.find((d) => {
-          return d.name == "subreddit"
+          return d.name == 'subreddit'
         }).parameters.subreddit,
         page = contexts.find((d) => {
-          return d.name == "page"
+          return d.name == 'page'
         }).parameters.page
-    getPosts(subreddit, "top", page, (resData) => {
+    getPosts(subreddit, 'top', page, (resData) => {
       res.send(resData)
     })     
   }
@@ -116,22 +116,22 @@ const getPosts = (subreddit, sort, page, callback) => {
   if (page === 3) {
     skip = 15
   }
-  axios.get("https://www.reddit.com/r/" + subreddit + "/" + sort + ".json")
+  axios.get('https://www.reddit.com/r/' + subreddit + '/' + sort + '.json')
   .then((resp) => {
-    let posts = resp.data.data.children
-    let lim = 5
-    let count = 0
-    let titles = []
+    let posts = resp.data.data.children,
+        lim = 5,
+        count = 0,
+        titles = []
     Object.keys(posts).forEach((x) => {
       let n = parseInt(x) + skip
-      titles.push([parseInt(n) + 1]+": "+posts[n].data.title + ".\n")
+      titles.push([parseInt(n) + 1]+': '+posts[n].data.title + '.\n')
       count++
       if (count == lim) {
-        let speech = "Here are the " + sort + " posts in " + subreddit + ".\n " + titles.toString().replace(/,/g, "")
+        let speech = 'Here are the ' + sort + ' posts in ' + subreddit + '.\n ' + titles.toString().replace(/,/g, '')
         let resData = {
           speech: speech,
           displayText: speech,
-          contextOut: [{name:"page", lifespan:5, parameters: {page: page + 1}}],
+          contextOut: [{name:'page', lifespan:5, parameters: {page: page++}}],
         }
         callback(resData)
         return
@@ -148,5 +148,5 @@ app.listen(port, '0.0.0.0', (err) => {
   if (err) {
     console.log(err)
   }
-  console.info('==> 🌎 Listening on port %s.', port, port)
+  console.info(`Listening on ${port}`)
 })
